@@ -1,12 +1,5 @@
-string BASE_URL = "http://rice.outerearth.net/";
-string API_KEY = "da43c2e0bb1f724e650535165731ecac";
-//integer mode = 0; //Web
-//integer mode = 1; //Notecard
-integer mode = 2; //Server
-string load_path = "test.rb";
-
 //!$!-CODE_START
-key resp_id="";
+
 //!$!-FUNCTION_CODE
 string serializeList(list l){
     integer i=(l!=[]);//This is a hack, it gets list lenght.
@@ -97,65 +90,24 @@ list unserializeList(string serialized_data){
     return result;
 }
 
-send_packet(string data)
-{
-	llHTTPRequest(BASE_URL+"api/"+API_KEY+"/"+(string)llGetKey()+"/"+data,[],"");
-}
-
 default
 {
     state_entry(){
-    	llReleaseURL(llGetObjectDesc());
-    	llOwnerSay("RubyScript_Core_MEM:"+(string)llGetFreeMemory());
-        llRequestURL();
+    	llOwnerSay("RubyScript_Slave_MEM:"+(string)llGetFreeMemory());
     }
- 
-    http_request(key id, string method, string body){
-    	resp_id = id;
-        string path = llGetHTTPHeader(id,"x-path-info");
-        if(method == URL_REQUEST_GRANTED){
-            llOwnerSay("Obtained URL: " + body);
-            llSetObjectDesc(body);
-            send_packet("init/"+llEscapeURL(body));
-        }
-        else if(method == URL_REQUEST_DENIED){
-            llOwnerSay("ERR:"+body);
-        }
-        else
+	link_message(integer src, integer num, string path, key id)
+	{
+		if(num==-426100)
 		{
-            list args = llParseString2List(llUnescapeURL(path),["/"],[]);
+			list args = llParseString2List(llUnescapeURL(path),["/"],[]);
             string func = llList2String(args,0);
 	    	//!$!-CALL_CODE
-			if(resp=="n")
+	    	if(resp=="n")
 			{
 				resp="nil";
 			}
-			else if(resp=="")
-			{
-				llMessageLinked(LINK_THIS,-426100,path,"");
-			}
-			else
-			{
-				llHTTPResponse(id,200,resp);
-			}
-        }
-    }
-    link_message(integer src, integer num, string path, key id)
-	{
-		if(num==-426101)
-		{
-			llHTTPResponse(resp_id,200,path);
+			llMessageLinked(LINK_THIS,-426101,resp,"");
 		}
 	}
-    touch_start(integer total_number)
-    {
-        list keys=[];
-        integer i;
-        for(i=0;i<total_number;i++)
-        {
-            keys+=llDetectedKey(i);
-        }
-        send_packet("event/touch_start/"+llEscapeURL(serializeList(keys)));
-    }
 }
 

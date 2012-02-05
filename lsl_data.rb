@@ -2,6 +2,7 @@ require "rubygems"
 require 'httparty'
 require 'uri'
 require 'matrix'
+require(File.dirname(__FILE__) + "/functions.rb")
 
 $TYPE_INTEGER	= 1
 $TYPE_FLOAT 	= 2
@@ -13,7 +14,7 @@ $TYPE_INVALID 	= 0
 
 $objects = []
 
-class Object
+class SLObject
 attr_accessor :uuid, :url
 	def initialize uuid, url
 		@uuid = uuid
@@ -26,7 +27,7 @@ attr_accessor :uuid, :url
 		end
 		payload = "/"+type+"/"+URI.escape(new_data.join("/"))
 		puts payload
-		data = Http.get($script_url+payload)
+		data = Http.get(@url+payload)
 		return data
 	end
 end
@@ -113,12 +114,5 @@ class Http
 	include HTTParty
 end
 def touch_start keys
-	say 0, "Hello: #{llKey2Name(keys[0])}"
+	llSay 0, "Hello: #{llKey2Name(keys[0])}"
 end
-
-
-llOwnerSay "RubyScript Initialized!"
-llOwnerSay("RUBY_VERSION: #{RUBY_VERSION}, RUBY_PLATFORM: #{RUBY_PLATFORM}, RUBY_RELEASE_DATE: #{RUBY_RELEASE_DATE}")
-
-llOwnerSay(llGetListLength(["test",5,1.3]).to_s)
-

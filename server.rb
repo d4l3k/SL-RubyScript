@@ -20,13 +20,13 @@ end
 
 get '/api/:apikey/:uuid/init/:url' do
 	if settings.apikeys.keys.include? params["apikey"]
-		puts "Creating new sandbox for: #{settings.apikeys[params["apikey"]]}. UUID: #{params["UUID"]}"
 		uuid = params["uuid"]
+		puts "Creating new sandbox for: #{settings.apikeys[params["apikey"]]}. UUID: #{params["uuid"]}"
 		puts headers.to_s
 		url = URI.unescape(params[:url])
 		script = SLScript.new(uuid, url)
 		settings.sandbox.store(uuid, script)
-		settings.sandbox[uuid].sandbox.eval("say 0, 'Sandbox Initialized!'")
+		settings.sandbox[uuid].sandbox.eval("$objects[0].llSay 0, 'Sandbox Initialized!'")
 	else
 		return "Access Denied"
 	end
@@ -34,7 +34,7 @@ end
 get '/api/:apikey/:uuid/event/touch_start/:keys' do
 	if settings.apikeys.keys.include? params["apikey"]
 		uuid = params["uuid"]
-		settings.sandbox[uuid].sandbox.eval( "touch_start #{URI.unescape(params["keys"]).split(";").to_s}")
+		settings.sandbox[uuid].sandbox.eval( "touch_start #{unserialize_list(URI.unescape(params["keys"]))}")
 	else
 		return "Access Denied"
 	end
@@ -54,10 +54,10 @@ class SLScript
 		@uuid = uuid
 		@url = url
 		@sandbox = Sandbox.safe
-		@sandbox.eval("$script_url = '#{url}'")
-		@sandbox.require(File.dirname(__FILE__) + "/functions.rb")
-		@sandbox.require(File.dirname(__FILE__) + "/slscript.rb")
-		@sandbox.eval("@objects[0]=Object.new("+uuid+","+url+")")
+		require(File.dirname(__FILE__) + "/lsl_data.rb")
+		@sandbox.require(File.dirname(__FILE__) + "/lsl_data.rb")
+		@sandbox.eval("$objects[0]=SLObject.new(\""+uuid+"\",\""+url+"\")")
+		@sandbox.load(File.dirname(__FILE__) + "/scripts/default.rb")
 		@sandbox.activate!
 	end
 end
