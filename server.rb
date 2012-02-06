@@ -31,10 +31,27 @@ get '/api/:apikey/:uuid/init/:url' do
 		return "Access Denied"
 	end
 end
-get '/api/:apikey/:uuid/event/touch_start/:keys' do
+get '/api/:apikey/:uuid/event/:event/:data' do
 	if settings.apikeys.keys.include? params["apikey"]
 		uuid = params["uuid"]
-		settings.sandbox[uuid].sandbox.eval( "touch_start #{unserialize_list(URI.unescape(params["keys"]))}")
+		event = params["event"]
+		data = params["data"]
+		event_args = {}
+		if data!="nil"
+			data.split("/").each do |b|
+				parts = b.split("|")
+				if parts[0](0..1)=="s_"
+					key = parts[0](2..(parts[0].length-1)).to_sym
+					values = unserialize_list(URI.unescape(parts[1]))[0]
+					event_args.store(key,values)
+				else
+					key = parts[0].to_sym
+					values = unserialize_list(URI.unescape(parts[1]))
+					event_args.store(key,values)
+				end
+			end
+		end
+		settings.sandbox[uuid].sandbox.eval("$objects[0].#{event}(#{event_args})")
 	else
 		return "Access Denied"
 	end
