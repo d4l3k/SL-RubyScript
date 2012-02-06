@@ -19,6 +19,7 @@ attr_accessor :uuid, :url
 	def initialize uuid, url
 		@uuid = uuid
 		@url = url
+		post_init
 	end
 	def send_packet type,data
 		new_data = []
@@ -29,6 +30,12 @@ attr_accessor :uuid, :url
 		puts payload
 		data = Http.get(@url+payload)
 		return data
+	end
+	# Method Stubs
+	def post_init
+	end
+	def touch_start data
+		puts "Default touch_start"
 	end
 end
 def is_key str
@@ -112,7 +119,4 @@ def ll_to_ruby data, type
 end
 class Http
 	include HTTParty
-end
-def touch_start keys
-	llSay 0, "Hello: #{llKey2Name(keys[0])}"
 end

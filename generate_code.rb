@@ -1,4 +1,4 @@
-$obsfucate = true
+$obsfucate = false
 
 # CODE
 class String
@@ -95,7 +95,7 @@ File.open(File.join(File.dirname(__FILE__),"./functions.rb"), "w") do |file|
 end
 puts "Finished generating functions. Parsing LSL Templates & Obsficating it."
 
-def lsl_template file, range, lsl
+def lsl_template file, output, range, lsl
 	puts "Generating: #{file}, range: #{range}."
 	script = ""
 	start = false
@@ -147,10 +147,11 @@ def lsl_template file, range, lsl
 	if $obsfucate
 		script = script.delete("\t")
 	end
-	File.open(File.join(File.dirname(__FILE__),file), "w") do |file|
+	File.open(File.join(File.dirname(__FILE__),output), "w") do |file|
 		file.print script
 	end
 end
 
-lsl_template "./script.lsl", 0..1, lsl
-lsl_template "./script_slave.lsl", 2..5, lsl
+lsl_template "./script.lsl", "./script.lsl", -1..-1, lsl
+lsl_template "./script_slave.lsl", "./script_slave_1.lsl", 0..1, lsl
+lsl_template "./script_slave.lsl", "./script_slave_2.lsl", 2..10, lsl

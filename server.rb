@@ -26,22 +26,24 @@ get '/api/:apikey/:uuid/init/:url' do
 		url = URI.unescape(params[:url])
 		script = SLScript.new(uuid, url)
 		settings.sandbox.store(uuid, script)
-		settings.sandbox[uuid].sandbox.eval("$objects[0].llSay 0, 'Sandbox Initialized!'")
 	else
 		return "Access Denied"
 	end
 end
-get '/api/:apikey/:uuid/event/:event/:data' do
+get '/api/:apikey/:uuid/event/:event/*' do
+	puts "event"
 	if settings.apikeys.keys.include? params["apikey"]
+		puts "event!!!!"
 		uuid = params["uuid"]
 		event = params["event"]
-		data = params["data"]
+		data = params[:splat][0]
+		puts [event,data].to_s
 		event_args = {}
 		if data!="nil"
 			data.split("/").each do |b|
 				parts = b.split("|")
-				if parts[0](0..1)=="s_"
-					key = parts[0](2..(parts[0].length-1)).to_sym
+				if parts[0][0..1]=="s_"
+					key = parts[0][2..(parts[0].length-1)].to_sym
 					values = unserialize_list(URI.unescape(parts[1]))[0]
 					event_args.store(key,values)
 				else
@@ -51,7 +53,9 @@ get '/api/:apikey/:uuid/event/:event/:data' do
 				end
 			end
 		end
-		settings.sandbox[uuid].sandbox.eval("$objects[0].#{event}(#{event_args})")
+		puts event_args.to_s
+		cmd = "$objects[0].#{event}(#{event_args})"
+		settings.sandbox[uuid].sandbox.eval(cmd)
 	else
 		return "Access Denied"
 	end
@@ -73,8 +77,8 @@ class SLScript
 		@sandbox = Sandbox.safe
 		require(File.dirname(__FILE__) + "/lsl_data.rb")
 		@sandbox.require(File.dirname(__FILE__) + "/lsl_data.rb")
+		@sandbox.require(File.dirname(__FILE__) + "/scripts/default.rb")
 		@sandbox.eval("$objects[0]=SLObject.new(\""+uuid+"\",\""+url+"\")")
-		@sandbox.load(File.dirname(__FILE__) + "/scripts/default.rb")
 		@sandbox.activate!
 	end
 end
