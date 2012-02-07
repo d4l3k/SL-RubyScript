@@ -106,7 +106,10 @@ default
 			{
 				resp="nil";
 			}
-			llMessageLinked(LINK_THIS,-426101,resp,"");
+			if(resp!="")
+			{
+				llMessageLinked(LINK_THIS,-426101,resp,"");
+			}
 		}
 	}
 }

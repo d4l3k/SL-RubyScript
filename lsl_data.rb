@@ -1,6 +1,6 @@
 require "rubygems"
-require 'httparty'
 require 'uri'
+require 'net/http'
 require 'matrix'
 require(File.dirname(__FILE__) + "/functions.rb")
 
@@ -14,21 +14,39 @@ $TYPE_INVALID 	= 0
 
 $objects = []
 
+def get_object uuid
+	$objects.each do |obj|
+		if obj.uuid==uuid
+			return obj
+		end
+	end
+	return nil
+end
+def add_object uuid, url
+	obj = get_object uuid
+	if obj
+		obj.url = url
+	else
+		$objects||= []
+		obj = SLObject.new(uuid, url)
+		$objects.push obj
+		obj.post_init
+	end
+end
 class SLObject
 attr_accessor :uuid, :url
 	def initialize uuid, url
 		@uuid = uuid
 		@url = url
-		post_init
 	end
 	def send_packet type,data
 		new_data = []
 		data.each do |dat|
 			new_data.push to_ll_type dat
 		end
-		payload = "/"+type+"/"+URI.escape(new_data.join("/"))
-		puts payload
-		data = Http.get(@url+payload)
+		payload = "/"+type+"/"+URI.encode(new_data.join("/"))
+		#data = Http.get(@url+payload)
+		data = Net::HTTP.get_response(URI.parse(@url+payload)).body
 		return data
 	end
 	# Method Stubs
@@ -116,7 +134,4 @@ def ll_to_ruby data, type
 		
 	end
 	return data
-end
-class Http
-	include HTTParty
 end

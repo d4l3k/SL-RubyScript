@@ -1,5 +1,6 @@
 string BASE_URL = "http://rice.outerearth.net/";
 string API_KEY = "da43c2e0bb1f724e650535165731ecac";
+string SANDBOX = "default";
 //integer mode = 0; //Web
 //integer mode = 1; //Notecard
 integer mode = 2; //Server
@@ -7,9 +8,8 @@ string load_path = "test.rb";
 
 //!$!-CODE_START
 key resp_id="";
-//!$!-FUNCTION_CODE
 string serializeList(list l){
-    integer i=(l!=[]);//This is a hack, it gets list lenght.
+    integer i=(l!=[]);//This is a hack, it gets list length.
     if(i)
     {
         string serialized_data = "";
@@ -116,7 +116,7 @@ default
         if(method == URL_REQUEST_GRANTED){
             llOwnerSay("Obtained URL: " + body);
             llSetObjectDesc(body);
-            send_packet("init/"+llEscapeURL(body));
+            send_packet("init/"+llEscapeURL(body)+"/"+SANDBOX);
         }
         else if(method == URL_REQUEST_DENIED){
             llOwnerSay("ERR:"+body);
@@ -125,19 +125,7 @@ default
 		{
             list args = llParseString2List(llUnescapeURL(path),["/"],[]);
             string func = llList2String(args,0);
-	    	//!$!-CALL_CODE
-			if(resp=="n")
-			{
-				resp="nil";
-			}
-			else if(resp=="")
-			{
-				llMessageLinked(LINK_THIS,-426100,path,"");
-			}
-			else
-			{
-				llHTTPResponse(id,200,resp);
-			}
+			llMessageLinked(LINK_THIS,-426100,path,"");
         }
     }
     link_message(integer src, integer num, string path, key id)
@@ -222,178 +210,6 @@ default
             uv+=llDetectedTouchUV(i);
         }
         send_packet("event/touch_start"+
-        	llEscapeURL(serializeList(keys))+
-      		"/key|"+llEscapeURL(serializeList(keys))+
-      		"/pos|"+llEscapeURL(serializeList(pos))+
-      		"/owner|"+llEscapeURL(serializeList(owner))+
-      		"/rot|"+llEscapeURL(serializeList(rot))+
-      		"/name|"+llEscapeURL(serializeList(name))+
-      		"/type|"+llEscapeURL(serializeList(type))+
-      		"/vel|"+llEscapeURL(serializeList(vel))+
-      		"/group|"+llEscapeURL(serializeList(group))+
-      		// Touch & Collision
-      		"/link_num|"+llEscapeURL(serializeList(link))+
-      		// Touch
-      		"/touch_binormal|"+llEscapeURL(serializeList(binormal))+
-      		"/touch_face|"+llEscapeURL(serializeList(face))+
-      		"/touch_normal|"+llEscapeURL(serializeList(normal))+
-      		"/touch_pos|"+llEscapeURL(serializeList(touch_pos))+
-      		"/touch_st|"+llEscapeURL(serializeList(st))+
-      		"/touch_uv|"+llEscapeURL(serializeList(uv))
-      	);
-    }
-    touch(integer total_number)
-    {
-    	integer i;
-        list keys=[];
-        for(i=0;i<total_number;i++){
-            keys+=llDetectedKey(i);
- 		}
-        list pos=[];
-        for(i=0;i<total_number;i++){
-            pos+=llDetectedPos(i);
-        }
-        list owner=[];
-        for(i=0;i<total_number;i++){
-            owner+=llDetectedOwner(i);
-        }
-        list rot=[];
-        for(i=0;i<total_number;i++){
-            rot+=llDetectedRot(i);
-        }
-        list name=[];
-        for(i=0;i<total_number;i++){
-            name+=llDetectedName(i);
-        }
-        list type=[];
-        for(i=0;i<total_number;i++){
-            type+=llDetectedType(i);
-        }
-        list vel=[];
-        for(i=0;i<total_number;i++){
-            vel+=llDetectedVel(i);
-        }
-        list group=[];
-        for(i=0;i<total_number;i++){
-            group+=llDetectedGroup(i);
-        }
-        // Collision & Touch
-        list link=[];
-        for(i=0;i<total_number;i++){
-            link+=llDetectedLinkNumber(i);
-        }
-        // Touch
-        list binormal=[];
-        for(i=0;i<total_number;i++){
-            binormal+=llDetectedTouchBinormal(i);
-        }
-        list face=[];
-        for(i=0;i<total_number;i++){
-            face+=llDetectedTouchFace(i);
-        }
-        list normal=[];
-        for(i=0;i<total_number;i++){
-            normal+=llDetectedTouchNormal(i);
-        }
-        list touch_pos=[];
-        for(i=0;i<total_number;i++){
-            touch_pos+=llDetectedTouchPos(i);
-        }
-        list st=[];
-        for(i=0;i<total_number;i++){
-            st+=llDetectedTouchST(i);
-        }
-        list uv=[];
-        for(i=0;i<total_number;i++){
-            uv+=llDetectedTouchUV(i);
-        }
-        send_packet("event/touch"+
-        	llEscapeURL(serializeList(keys))+
-      		"/key|"+llEscapeURL(serializeList(keys))+
-      		"/pos|"+llEscapeURL(serializeList(pos))+
-      		"/owner|"+llEscapeURL(serializeList(owner))+
-      		"/rot|"+llEscapeURL(serializeList(rot))+
-      		"/name|"+llEscapeURL(serializeList(name))+
-      		"/type|"+llEscapeURL(serializeList(type))+
-      		"/vel|"+llEscapeURL(serializeList(vel))+
-      		"/group|"+llEscapeURL(serializeList(group))+
-      		// Touch & Collision
-      		"/link_num|"+llEscapeURL(serializeList(link))+
-      		// Touch
-      		"/touch_binormal|"+llEscapeURL(serializeList(binormal))+
-      		"/touch_face|"+llEscapeURL(serializeList(face))+
-      		"/touch_normal|"+llEscapeURL(serializeList(normal))+
-      		"/touch_pos|"+llEscapeURL(serializeList(touch_pos))+
-      		"/touch_st|"+llEscapeURL(serializeList(st))+
-      		"/touch_uv|"+llEscapeURL(serializeList(uv))
-      	);
-    }
-    touch_end(integer total_number)
-    {
-    	integer i;
-        list keys=[];
-        for(i=0;i<total_number;i++){
-            keys+=llDetectedKey(i);
- 		}
-        list pos=[];
-        for(i=0;i<total_number;i++){
-            pos+=llDetectedPos(i);
-        }
-        list owner=[];
-        for(i=0;i<total_number;i++){
-            owner+=llDetectedOwner(i);
-        }
-        list rot=[];
-        for(i=0;i<total_number;i++){
-            rot+=llDetectedRot(i);
-        }
-        list name=[];
-        for(i=0;i<total_number;i++){
-            name+=llDetectedName(i);
-        }
-        list type=[];
-        for(i=0;i<total_number;i++){
-            type+=llDetectedType(i);
-        }
-        list vel=[];
-        for(i=0;i<total_number;i++){
-            vel+=llDetectedVel(i);
-        }
-        list group=[];
-        for(i=0;i<total_number;i++){
-            group+=llDetectedGroup(i);
-        }
-        // Collision & Touch
-        list link=[];
-        for(i=0;i<total_number;i++){
-            link+=llDetectedLinkNumber(i);
-        }
-        // Touch
-        list binormal=[];
-        for(i=0;i<total_number;i++){
-            binormal+=llDetectedTouchBinormal(i);
-        }
-        list face=[];
-        for(i=0;i<total_number;i++){
-            face+=llDetectedTouchFace(i);
-        }
-        list normal=[];
-        for(i=0;i<total_number;i++){
-            normal+=llDetectedTouchNormal(i);
-        }
-        list touch_pos=[];
-        for(i=0;i<total_number;i++){
-            touch_pos+=llDetectedTouchPos(i);
-        }
-        list st=[];
-        for(i=0;i<total_number;i++){
-            st+=llDetectedTouchST(i);
-        }
-        list uv=[];
-        for(i=0;i<total_number;i++){
-            uv+=llDetectedTouchUV(i);
-        }
-        send_packet("event/touch_end"+
       		"/key|"+llEscapeURL(serializeList(keys))+
       		"/pos|"+llEscapeURL(serializeList(pos))+
       		"/owner|"+llEscapeURL(serializeList(owner))+
@@ -466,112 +282,6 @@ default
       		"/link_num|"+llEscapeURL(serializeList(link))
       	);
     }
-    collision(integer total_number)
-    {
-    	integer i;
-        list keys=[];
-        for(i=0;i<total_number;i++){
-            keys+=llDetectedKey(i);
- 		}
-        list pos=[];
-        for(i=0;i<total_number;i++){
-            pos+=llDetectedPos(i);
-        }
-        list owner=[];
-        for(i=0;i<total_number;i++){
-            owner+=llDetectedOwner(i);
-        }
-        list rot=[];
-        for(i=0;i<total_number;i++){
-            rot+=llDetectedRot(i);
-        }
-        list name=[];
-        for(i=0;i<total_number;i++){
-            name+=llDetectedName(i);
-        }
-        list type=[];
-        for(i=0;i<total_number;i++){
-            type+=llDetectedType(i);
-        }
-        list vel=[];
-        for(i=0;i<total_number;i++){
-            vel+=llDetectedVel(i);
-        }
-        list group=[];
-        for(i=0;i<total_number;i++){
-            group+=llDetectedGroup(i);
-        }
-        // Collision & Touch
-        list link=[];
-        for(i=0;i<total_number;i++){
-            link+=llDetectedLinkNumber(i);
-        }
-        send_packet("event/collision"+
-      		"/key|"+llEscapeURL(serializeList(keys))+
-      		"/pos|"+llEscapeURL(serializeList(pos))+
-      		"/owner|"+llEscapeURL(serializeList(owner))+
-      		"/rot|"+llEscapeURL(serializeList(rot))+
-      		"/name|"+llEscapeURL(serializeList(name))+
-      		"/type|"+llEscapeURL(serializeList(type))+
-      		"/vel|"+llEscapeURL(serializeList(vel))+
-      		"/group|"+llEscapeURL(serializeList(group))+
-      		// Touch & Collision
-      		"/link_num|"+llEscapeURL(serializeList(link))
-      	);
-    }
-    collision_end(integer total_number)
-    {
-    	integer i;
-        list keys=[];
-        for(i=0;i<total_number;i++){
-            keys+=llDetectedKey(i);
- 		}
-        list pos=[];
-        for(i=0;i<total_number;i++){
-            pos+=llDetectedPos(i);
-        }
-        list owner=[];
-        for(i=0;i<total_number;i++){
-            owner+=llDetectedOwner(i);
-        }
-        list rot=[];
-        for(i=0;i<total_number;i++){
-            rot+=llDetectedRot(i);
-        }
-        list name=[];
-        for(i=0;i<total_number;i++){
-            name+=llDetectedName(i);
-        }
-        list type=[];
-        for(i=0;i<total_number;i++){
-            type+=llDetectedType(i);
-        }
-        list vel=[];
-        for(i=0;i<total_number;i++){
-            vel+=llDetectedVel(i);
-        }
-        list group=[];
-        for(i=0;i<total_number;i++){
-            group+=llDetectedGroup(i);
-        }
-        // Collision & Touch
-        list link=[];
-        for(i=0;i<total_number;i++){
-            link+=llDetectedLinkNumber(i);
-        }
-        send_packet("event/collision_end"+
-      		"/key|"+llEscapeURL(serializeList(keys))+
-      		"/pos|"+llEscapeURL(serializeList(pos))+
-      		"/owner|"+llEscapeURL(serializeList(owner))+
-      		"/rot|"+llEscapeURL(serializeList(rot))+
-      		"/name|"+llEscapeURL(serializeList(name))+
-      		"/type|"+llEscapeURL(serializeList(type))+
-      		"/vel|"+llEscapeURL(serializeList(vel))+
-      		"/group|"+llEscapeURL(serializeList(group))+
-      		// Touch & Collision
-      		"/link_num|"+llEscapeURL(serializeList(link))
-      	);
-    }
     sensor(integer total_number)
     {
     	integer i;
@@ -618,7 +328,7 @@ default
       		"/group|"+llEscapeURL(serializeList(group))
       	);
     }
-    moving_start()
+    no_sensor()
     {
     	send_packet("event/no_sensor/nil");
     }
@@ -737,24 +447,12 @@ default
     object_rez( key id )
     {
     	send_packet("event/object_rez"
-      		+"/s_id|"+llEscapeURL(serializeList([perm]))
+      		+"/s_id|"+llEscapeURL(serializeList([id]))
       	);
     }
     land_collision_start( vector pos )
     {
     	send_packet("event/land_collision_start"
-      		+"/s_pos|"+llEscapeURL(serializeList([pos]))
-      	);
-    }
-    land_collision( vector pos )
-    {
-    	send_packet("event/land_collision"
-      		+"/s_pos|"+llEscapeURL(serializeList([pos]))
-      	);
-    }
-    land_collision_end( vector pos )
-    {
-    	send_packet("event/land_collision_end"
       		+"/s_pos|"+llEscapeURL(serializeList([pos]))
       	);
     }

@@ -1,0 +1,15 @@
+<div>
+<h2>Control Panel (User: <%= @name %>)</h2>
+</div>
+<div>
+<h2>Info</h2>
+<hr/>
+Username: <%= @name %><br/>
+APIKey: <%= @user.apikey %><br/>
+Sandboxes: <%= @user.sandboxes.to_s %><br/>
+</div>
+<div>
+<h2>YAML Dump</h2>
+<hr/>
+<pre><%= YAML::dump(@user).strip.gsub("password: "+@user.password, "password: **hidden**") %>
+</div>
