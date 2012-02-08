@@ -12,6 +12,12 @@ $TYPE_VECTOR 	= 5
 $TYPE_ROTATION 	= 6
 $TYPE_INVALID 	= 0
 
+$LINK_ROOT=1
+$LINK_SET=-1
+$LINK_ALL_OTHERS=-2
+$LINK_ALL_CHILDREN=-3
+$LINK_THIS=-3
+
 $objects = []
 
 def get_object uuid
@@ -45,6 +51,7 @@ attr_accessor :uuid, :url
 			new_data.push to_ll_type dat
 		end
 		payload = "/"+type+"/"+URI.encode(new_data.join("/"))
+		payload = payload.gsub('[', '%5B').gsub(']', '%5D')
 		#data = Http.get(@url+payload)
 		data = Net::HTTP.get_response(URI.parse(@url+payload)).body
 		return data
@@ -54,6 +61,10 @@ attr_accessor :uuid, :url
 	end
 	def touch_start data
 		puts "Default touch_start"
+	end
+	# Optimizer Functions
+	def llGetKey
+		return @uuid
 	end
 end
 def is_key str

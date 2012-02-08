@@ -60,6 +60,9 @@ set :users, users
 get '/' do
 	erb :index
 end
+get '/apply/' do
+	erb :redirect
+end
 get '/control/?' do
 	protected!
 	@name = @user.username
