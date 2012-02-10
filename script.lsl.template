@@ -59,10 +59,9 @@ list unserializeList(string serialized_data){
     do
     {
         if((type=(integer)(item=llList2String(l,(i=~-i)))))
-        {//Little error checking (also takes care of null strings).
+        {
             integer p = llSubStringIndex(item, ",");
             item = llDeleteSubString(item, 0, p);
-            // How about those switch statements, Lindens???
             if(TYPE_INTEGER==type)
             {
                 t=[(integer)item];
@@ -148,67 +147,41 @@ default
     {
     	integer i;
         list keys=[];
-        for(i=0;i<total_number;i++){
-            keys+=llDetectedKey(i);
- 		}
         list pos=[];
-        for(i=0;i<total_number;i++){
-            pos+=llDetectedPos(i);
-        }
         list owner=[];
-        for(i=0;i<total_number;i++){
-            owner+=llDetectedOwner(i);
-        }
         list rot=[];
-        for(i=0;i<total_number;i++){
-            rot+=llDetectedRot(i);
-        }
         list name=[];
-        for(i=0;i<total_number;i++){
-            name+=llDetectedName(i);
-        }
         list type=[];
-        for(i=0;i<total_number;i++){
-            type+=llDetectedType(i);
-        }
         list vel=[];
-        for(i=0;i<total_number;i++){
-            vel+=llDetectedVel(i);
-        }
         list group=[];
-        for(i=0;i<total_number;i++){
-            group+=llDetectedGroup(i);
-        }
         // Collision & Touch
         list link=[];
-        for(i=0;i<total_number;i++){
-            link+=llDetectedLinkNumber(i);
-        }
         // Touch
         list binormal=[];
-        for(i=0;i<total_number;i++){
-            binormal+=llDetectedTouchBinormal(i);
-        }
         list face=[];
-        for(i=0;i<total_number;i++){
-            face+=llDetectedTouchFace(i);
-        }
         list normal=[];
-        for(i=0;i<total_number;i++){
-            normal+=llDetectedTouchNormal(i);
-        }
         list touch_pos=[];
-        for(i=0;i<total_number;i++){
-            touch_pos+=llDetectedTouchPos(i);
-        }
         list st=[];
-        for(i=0;i<total_number;i++){
-            st+=llDetectedTouchST(i);
-        }
         list uv=[];
         for(i=0;i<total_number;i++){
+            keys+=llDetectedKey(i);
+            pos+=llDetectedPos(i);
+            owner+=llDetectedOwner(i);
+            rot+=llDetectedRot(i);
+            name+=llDetectedName(i);
+            type+=llDetectedType(i);
+            vel+=llDetectedVel(i);
+            group+=llDetectedGroup(i);
+            // Collision & Touch
+            link+=llDetectedLinkNumber(i);
+            // Touch
+            binormal+=llDetectedTouchBinormal(i);
+            face+=llDetectedTouchFace(i);
+            normal+=llDetectedTouchNormal(i);
+            touch_pos+=llDetectedTouchPos(i);
+            st+=llDetectedTouchST(i);
             uv+=llDetectedTouchUV(i);
-        }
+ 		}
         send_packet("event/touch_start"+
       		"/key|"+llEscapeURL(serializeList(keys))+
       		"/pos|"+llEscapeURL(serializeList(pos))+
@@ -233,42 +206,27 @@ default
     {
     	integer i;
         list keys=[];
-        for(i=0;i<total_number;i++){
-            keys+=llDetectedKey(i);
- 		}
         list pos=[];
-        for(i=0;i<total_number;i++){
-            pos+=llDetectedPos(i);
-        }
         list owner=[];
-        for(i=0;i<total_number;i++){
-            owner+=llDetectedOwner(i);
-        }
         list rot=[];
-        for(i=0;i<total_number;i++){
-            rot+=llDetectedRot(i);
-        }
         list name=[];
-        for(i=0;i<total_number;i++){
-            name+=llDetectedName(i);
-        }
         list type=[];
-        for(i=0;i<total_number;i++){
-            type+=llDetectedType(i);
-        }
         list vel=[];
-        for(i=0;i<total_number;i++){
-            vel+=llDetectedVel(i);
-        }
         list group=[];
-        for(i=0;i<total_number;i++){
-            group+=llDetectedGroup(i);
-        }
         // Collision & Touch
         list link=[];
         for(i=0;i<total_number;i++){
-            link+=llDetectedLinkNumber(i);
-        }
+            keys+=llDetectedKey(i);
+            pos+=llDetectedPos(i);
+            owner+=llDetectedOwner(i);
+            rot+=llDetectedRot(i);
+            name+=llDetectedName(i);
+            type+=llDetectedType(i);
+            vel+=llDetectedVel(i);
+            group+=llDetectedGroup(i);
+            // Collision & Touch
+            link+=llDetectedLinkNumber(i)
+ 		}
         send_packet("event/collision_start"+
       		"/key|"+llEscapeURL(serializeList(keys))+
       		"/pos|"+llEscapeURL(serializeList(pos))+
@@ -280,43 +238,29 @@ default
       		"/group|"+llEscapeURL(serializeList(group))+
       		// Touch & Collision
       		"/link_num|"+llEscapeURL(serializeList(link))
-      	);
+      		}
     }
     sensor(integer total_number)
     {
     	integer i;
         list keys=[];
-        for(i=0;i<total_number;i++){
-            keys+=llDetectedKey(i);
- 		}
         list pos=[];
-        for(i=0;i<total_number;i++){
-            pos+=llDetectedPos(i);
-        }
         list owner=[];
-        for(i=0;i<total_number;i++){
-            owner+=llDetectedOwner(i);
-        }
         list rot=[];
-        for(i=0;i<total_number;i++){
-            rot+=llDetectedRot(i);
-        }
         list name=[];
-        for(i=0;i<total_number;i++){
-            name+=llDetectedName(i);
-        }
         list type=[];
-        for(i=0;i<total_number;i++){
-            type+=llDetectedType(i);
-        }
         list vel=[];
-        for(i=0;i<total_number;i++){
-            vel+=llDetectedVel(i);
-        }
         list group=[];
         for(i=0;i<total_number;i++){
+            keys+=llDetectedKey(i);
+            pos+=llDetectedPos(i);
+            owner+=llDetectedOwner(i);
+            rot+=llDetectedRot(i);
+            name+=llDetectedName(i);
+            type+=llDetectedType(i);
+            vel+=llDetectedVel(i);
             group+=llDetectedGroup(i);
-        }
+ 		}
         send_packet("event/sensor"+
       		"/key|"+llEscapeURL(serializeList(keys))+
       		"/pos|"+llEscapeURL(serializeList(pos))+
