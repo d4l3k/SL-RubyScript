@@ -18,7 +18,20 @@ end
 
 functions = functions.split("\n")
 functions.delete("")
-puts functions
+ruby_file = File.join(File.dirname(__FILE__),"./skip_functions.txt")
+File.open(ruby_file, "r").each do |file|
+	remove = file.split("\n")
+	remove.delete("")
+	puts remove.to_s
+	remove.each do |r|
+		functions.each do |func|
+			if func.include? r
+				puts "Deleting #{func}"
+				functions.delete(func)
+			end
+		end
+	end
+end
 lsl = []
 ruby = "class SLObject\n"
 ruby_module = ""

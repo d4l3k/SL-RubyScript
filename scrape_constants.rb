@@ -1,4 +1,5 @@
-
+require "rubygems"
+require "matrix"
 require "httparty"
 links = []
 
@@ -60,15 +61,46 @@ links.each do |link_base|
 					func = dat
 				elsif name == "type"
 					type = dat
-				elsif name == "hvalue"
-					val = dat.hex
-				elsif name == "value"
-					dits = dat.delete("{{")
-					if dits=="LSL Hex"
-						val = split[r+1].delete("}}").hex
-					else
-						val = dat.to_i
+				elsif type == "vector"
+					if name=="value"
+						dits=dat.delete("{{")
+						if dits=="LSL VR"
+							x = split[r+1].to_f
+							y = split[r+2].to_f
+							z = split[r+3].delete("}}").to_f
+							val = Vector[x,y,z]
+						end
+					end	
+				elsif type == "rotation"
+					if name=="value"
+						dits=dat.delete("{{")
+						if dits=="LSL VR"
+							x = split[r+1].to_f
+							y = split[r+2].to_f
+							w = split[r+3].to_f
+							z = split[r+4].delete("}}").to_f
+							val = Vector[x,y,w,z]
+						end
 					end
+				elsif type == "integer"
+					if name == "hvalue"
+						val = dat.hex
+					elsif name == "value"
+						dits = dat.delete("{{")
+						if dits=="LSL Hex"
+							val = split[r+1].delete("}}").hex
+						else
+							val = dat.to_i
+							if val==0
+								nval = dat.hex
+								if nval!=val
+									val = nval
+								end
+							end
+						end
+					end
+				else
+					val = "\"#{dat}\""
 				end
 			end
 		end
@@ -83,4 +115,4 @@ File.open(ruby_file, "w") do |file|
 	file.print functions.join("\n")
 end
 
-#exec("ruby --1.9 generate_code.rb")
+exec("ruby --1.9 generate_code.rb")

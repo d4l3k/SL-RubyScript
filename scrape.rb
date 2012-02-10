@@ -91,4 +91,4 @@ File.open(ruby_file, "w") do |file|
 	file.print functions.join("\n")
 end
 
-exec("ruby --1.9 generate_code.rb")
+exec("ruby --1.8 scrape_constants.rb")

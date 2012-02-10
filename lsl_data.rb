@@ -3,6 +3,7 @@ require 'uri'
 require 'net/http'
 require 'matrix'
 require(File.dirname(__FILE__) + "/functions.rb")
+require(File.dirname(__FILE__) + "/constants.rb")
 
 $TYPE_INTEGER	= 1
 $TYPE_FLOAT 	= 2

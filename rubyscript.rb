@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sinatra'
+#require 'sinatra/synchrony'
 require 'sandbox'
 require "uri"
 require 'yaml'
@@ -10,22 +11,22 @@ require(File.dirname(__FILE__) + "/lsl_data.rb")
 set :port, 80
 helpers do
   def protected!
-    unless authorized?
-      response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
-      throw(:halt, [401, "Not authorized\n"])
-    end
+	unless authorized?
+	  response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+	  throw(:halt, [401, "Not authorized\n"])
+	end
   end
   def authorized?
-    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-    if @auth.provided? && @auth.basic? && @auth.credentials
-    	settings.users.values.each do |user|
-    		if @auth.credentials == [user.username,user.password]
-    			@user = user
-    			return true
-    		end
-    	end
-    end
-    return false
+	@auth ||=  Rack::Auth::Basic::Request.new(request.env)
+	if @auth.provided? && @auth.basic? && @auth.credentials
+		settings.users.values.each do |user|
+			if @auth.credentials == [user.username,user.password]
+				@user = user
+				return true
+			end
+		end
+	end
+	return false
   end
 	def valid_apikey?
 		key = params["apikey"]

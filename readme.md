@@ -1,16 +1,16 @@
 # Software Install
 Instructions assume Ruby Version Manager is installed.  
 SL_Ruby requires JRuby  
-`rvm install jruby`.  
-`rvm use jruby`
+`rvm install jruby-head`.  
+`rvm use jruby-head`
 
 # RubyGems
 Required RubyGems.  
-`rvm gem install eventmachine` - This & Thin are optional. However, they significantly speed up sinatra.  
-`rvm gem install thin` - Optional ^^^ See above ^^  
+`rvm gem install eventmachine`  
+`rvm gem install thin`  
 `rvm gem install sinatra`  
 `rvm gem install jruby_sandbox`  
-`rvm gem install httparty`  
+`rvm gem install sinatra-syncrony`  
 
 # Building the Code (for Non-Developers)
 To build the LSL & Ruby code just run `ruby --1.9 scrape.rb`.  
