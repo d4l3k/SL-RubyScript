@@ -1,12 +1,12 @@
-require 'rubygems'
+#$:.unshift File.dirname(__FILE__)
+require 'rubygems' #Added so code might work under 1.8
 require 'sinatra'
-#require 'sinatra/synchrony'
-require 'sandbox'
 require "uri"
 require 'yaml'
 require 'net/http'
 require 'digest/sha1'
-require(File.dirname(__FILE__) + "/lsl_data.rb")
+require 'rubyscript/lsl_data'
+require 'rubyscript/sl_sandbox'
 
 set :port, 80
 helpers do
@@ -78,7 +78,6 @@ get '/api/:apikey/info' do
 	msg = "Api-Key: #{key}<br/>Owner: #{user.username}<br/>#{user.sandboxes.to_s}"
 	return msg
 end
-
 get '/api/:apikey/:uuid/init/:url/:sandbox' do
 	valid_apikey?
 	uuid = params["uuid"]
@@ -92,11 +91,12 @@ get '/api/:apikey/:uuid/init/:url/:sandbox' do
 	else
 		puts "Creating new sandbox for: #{user.username}. UUID: #{uuid}"
 		sbox = Sandbox.safe
-		sbox.require(File.dirname(__FILE__) + "/lsl_data.rb")
-		sbox.require(File.dirname(__FILE__) + "/scripts/default.rb")
+		sbox.eval("$:.unshift File.dirname(__FILE__)")
+		sbox.require("rubyscript/lsl_data")
+		sbox.require("scripts/default")
 		sbox.eval("add_object(\"#{uuid}\",\"#{url}\")")
 		user.sandboxes.store(params["sandbox"], sbox)
-		sbox.activate!
+		sbox.activate2!
 		user.scripts.store(uuid,sbox)
 	end
 end

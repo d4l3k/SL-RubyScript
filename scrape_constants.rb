@@ -1,11 +1,10 @@
 require "rubygems"
 require "matrix"
-require "httparty"
+require "net/http"
 links = []
-
 sources = ["http://wiki.secondlife.com/wiki/Category:LSL_Constants","http://wiki.secondlife.com/w/index.php?title=Category:LSL_Constants&from=PARCEL_FLAG_USE_ACCESS_GROUP","http://wiki.secondlife.com/w/index.php?title=Category:LSL_Constants&from=VEHICLE_FLAG_LIMIT_ROLL_ONLY"]
 sources.each do |src|
-	data = HTTParty.get(src)
+	data = Net::HTTP.get_response(URI.parse(src)).body
 	split = data.split("<a href=\"")
 	split.delete_at(0)
 	split.each do |dat|
@@ -41,7 +40,7 @@ links.each do |link_base|
 	puts "#{(i/links.length.to_f*100.0).to_i}% - ETA: #{min.floor}m:#{(min-min.floor)*60.0}s - Downloading & Parsing: #{link_base}"
 	url = "http://wiki.secondlife.com/w/index.php?title="+link_base.split("/")[2]+"&action=edit"
 	puts "URL: #{url}"
-	data = HTTParty.get(url)
+	data = Net::HTTP.get_response(URI.parse(url)).body
 	#puts data
 	split = data.delete("\n").split("|")
 	#puts split.length
@@ -110,9 +109,7 @@ links.each do |link_base|
 	puts "Result: "+func
 end
 
-ruby_file = File.join(File.dirname(__FILE__),"./constants.rb")
+ruby_file = File.join(File.dirname(__FILE__),"rubyscript/constants.rb")
 File.open(ruby_file, "w") do |file|
 	file.print functions.join("\n")
 end
-
-exec("ruby --1.9 generate_code.rb")

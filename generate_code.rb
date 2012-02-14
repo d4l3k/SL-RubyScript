@@ -11,14 +11,14 @@ class String
 end
 
 functions = ""
-ruby_file = File.join(File.dirname(__FILE__),"./all_functions.txt")
+ruby_file = File.join(File.dirname(__FILE__),"lsl/all_functions.txt")
 File.open(ruby_file, "r").each do |file|
 	functions += file
 end
 
 functions = functions.split("\n")
 functions.delete("")
-ruby_file = File.join(File.dirname(__FILE__),"./skip_functions.txt")
+ruby_file = File.join(File.dirname(__FILE__),"lsl/skip_functions.txt")
 File.open(ruby_file, "r").each do |file|
 	remove = file.split("\n")
 	remove.delete("")
@@ -103,7 +103,7 @@ functions.each do |func|
 end
 lsl[lsl.size-1]+="return \"\";\n}\n"
 puts "Writing Ruby Code"
-File.open(File.join(File.dirname(__FILE__),"./functions.rb"), "w") do |file|
+File.open(File.join(File.dirname(__FILE__),"rubyscript/functions.rb"), "w") do |file|
 	file.print ruby+"end\n"+ruby_module
 end
 puts "Finished generating functions. Parsing LSL Templates & Obsficating it."
@@ -112,7 +112,7 @@ def lsl_template file, output, range, lsl
 	puts "Generating: #{file}, range: #{range}."
 	script = ""
 	start = false
-	File.open(File.join(File.dirname(__FILE__),file+".template"), "r").each do |data|
+	File.open(File.join(File.dirname(__FILE__),file), "r").each do |data|
 		if data.include? "//!$!-CODE_START"
 			start = true
 			script += data
@@ -165,6 +165,6 @@ def lsl_template file, output, range, lsl
 	end
 end
 
-lsl_template "./script.lsl", "./script.lsl", -1..-1, lsl
-lsl_template "./script_slave.lsl", "./script_slave_1.lsl", 0..1, lsl
-lsl_template "./script_slave.lsl", "./script_slave_2.lsl", 2..10, lsl
+lsl_template "lsl_templates/script.lsl", "lsl/script.lsl", -1..-1, lsl
+lsl_template "lsl_templates/script_slave.lsl", "lsl/script_slave_1.lsl", 0..1, lsl
+lsl_template "lsl_templates/script_slave.lsl", "lsl/script_slave_2.lsl", 2..10, lsl
